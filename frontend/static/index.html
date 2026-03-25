@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kubernetes Two-Service Sample</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2rem;
+        background: #f7f7f7;
+        color: #222;
+      }
+      .card {
+        max-width: 720px;
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      }
+      h1 {
+        margin-top: 0;
+      }
+      button {
+        padding: 0.75rem 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      pre {
+        background: #111;
+        color: #f2f2f2;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow: auto;
+      }
+      .muted {
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Two-Service Kubernetes Sample</h1>
+      <p class="muted">
+        This frontend is served by Nginx. API requests are proxied to the backend through <code>/api</code>.
+      </p>
+      <button id="load-button">Load backend response</button>
+      <h2>Backend response</h2>
+      <pre id="result">Press the button to call the backend.</pre>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>

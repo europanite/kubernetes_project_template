@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: sample-app
+data:
+  FRONTEND_API_ORIGIN: http://backend.sample-app.svc.cluster.local:8000

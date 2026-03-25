@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: sample-app
+data:
+  APP_NAME: backend
+  APP_ENV: base
+  APP_VERSION: 0.1.0
+  GREETING: Hello from the backend ConfigMap
