@@ -1,4 +1,4 @@
-# kubernetes-compose-dual-template
+# [kubernetes_project_template](https://github.com/europanite/kubernetes_project_template "kubernetes_project_template")
 
 A small project that supports both **Docker Compose** and **Kubernetes**.
 
