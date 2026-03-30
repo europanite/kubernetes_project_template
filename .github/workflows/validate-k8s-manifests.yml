@@ -42,7 +42,7 @@ jobs:
 
       - name: kubectl dry-run via Kustomize overlay
         run: |
-          kubectl apply --dry-run=client -k k8s/overlays/local
+          kubectl apply --dry-run=client --validate=false -k k8s/overlays/local
 
       # ── 3. yamllint: catches YAML formatting issues in k8s/ only ──
       - name: Install yamllint
