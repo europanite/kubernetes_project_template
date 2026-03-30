@@ -19,38 +19,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # ── 1. kubeval: validates manifests against Kubernetes API schemas ──
-      - name: Install kubeval
+      # ── 1. kubeconform: validates manifests against Kubernetes API schemas ──
+      - name: Install kubeconform
         run: |
-          wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
-          tar xf kubeval-linux-amd64.tar.gz
-          sudo mv kubeval /usr/local/bin/
+          curl -sSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz \
+            | tar xz
+          sudo mv kubeconform /usr/local/bin/
 
-      - name: Run kubeval on all YAML files
+      - name: Run kubeconform on k8s/ manifests
         run: |
           find ./k8s -name '*.yaml' -o -name '*.yml' | \
-            xargs kubeval --ignore-missing-schemas
+            xargs kubeconform \
+              -strict \
+              -ignore-missing-schemas \
+              -kubernetes-version 1.29.0
 
-      # ── 2. kubectl dry-run: catches API-level errors ──
+      # ── 2. kubectl + Kustomize dry-run: validates the full overlay ──
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
         with:
           version: 'latest'
 
-      - name: kubectl dry-run (client-side)
+      - name: kubectl dry-run via Kustomize overlay
         run: |
-          find . -name '*.yaml' -o -name '*.yml' | \
-            grep -v '.github' | \
-            while read file; do
-              echo "Checking: $file"
-              kubectl apply --dry-run=client -f "$file" 2>&1 || true
-            done
+          kubectl apply --dry-run=client -k k8s/overlays/local
 
-      # ── 3. yamllint: catches YAML formatting issues ──
+      # ── 3. yamllint: catches YAML formatting issues in k8s/ only ──
       - name: Install yamllint
         run: pip install yamllint
 
-      - name: Run yamllint
+      - name: Run yamllint on k8s/ only
         run: |
-          yamllint -d "{extends: relaxed, rules: {line-length: {max: 150}}}" \
-            $(find . -name '*.yaml' -o -name '*.yml' | grep -v '.github')
+          yamllint -d "{extends: relaxed, rules: {line-length: {max: 150}}}" ./k8s
