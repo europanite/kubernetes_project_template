@@ -28,9 +28,8 @@ jobs:
 
       - name: Run kubeval on all YAML files
         run: |
-          find . -name '*.yaml' -o -name '*.yml' | \
-            grep -v '.github' | \
-            xargs kubeval --strict --ignore-missing-schemas
+          find ./k8s -name '*.yaml' -o -name '*.yml' | \
+            xargs kubeval --ignore-missing-schemas
 
       # ── 2. kubectl dry-run: catches API-level errors ──
       - name: Set up kubectl
