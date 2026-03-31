@@ -1,0 +1,49 @@
+name: Validate Kubernetes Manifests
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  validate:
+    name: Lint & Validate K8s Manifests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ── 1. kubeconform: validates manifests against Kubernetes API schemas ──
+      - name: Install kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz \
+            | tar xz
+          sudo mv kubeconform /usr/local/bin/
+
+      - name: Run kubeconform on k8s/ manifests
+        run: |
+          find ./k8s -name '*.yaml' -o -name '*.yml' | \
+            xargs kubeconform \
+              -strict \
+              -ignore-missing-schemas \
+              -kubernetes-version 1.29.0
+
+      # ── 2. Render Kustomize overlay and validate with kubeconform ──
+      - name: Render Kustomize overlay and validate
+        run: |
+          kubectl kustomize k8s/overlays/local | \
+            kubeconform -strict -ignore-missing-schemas -kubernetes-version 1.29.0
+
+      # ── 3. yamllint: catches YAML formatting issues in k8s/ only ──
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Run yamllint on k8s/ only
+        run: |
+          yamllint -d "{extends: relaxed, rules: {line-length: {max: 150}}}" ./k8s
