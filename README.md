@@ -2,6 +2,9 @@
 
 A small project that supports both **Docker Compose** and **Kubernetes**.
 
+[![Validate Kubernetes Manifests](https://github.com/europanite/kubernetes_project_template/actions/workflows/validate-k8s-manifests.yml/badge.svg)](https://github.com/europanite/kubernetes_project_template/actions/workflows/validate-k8s-manifests.yml)
+[![pages](https://github.com/europanite/kubernetes_project_template/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/europanite/kubernetes_project_template/actions/workflows/pages/pages-build-deployment)
+
 ## Stack
 
 - **backend**: FastAPI
